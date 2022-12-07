@@ -2,7 +2,7 @@ const dotenv = require('dotenv');
 dotenv.config({path : './config.env'});
 
 const mongoose = require('mongoose');
-const app = require('./app');
+const app = require('./index');
 
 mongoose.set('strictQuery', true)
 mongoose.connect(process.env.DATABASE)
@@ -10,7 +10,7 @@ mongoose.connect(process.env.DATABASE)
         console.log('DB connection success');
     })
 
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 4000;
 app.listen(port, () => console.log(`http://localhost:${port}`));
 
 // module.exports = server;    
