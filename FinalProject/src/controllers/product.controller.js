@@ -7,7 +7,8 @@ class ProductController {
         const product = new Product(req.body);
         product.save()
         .then(product => {
-            res.status(200).json({'product':'added successfully'});
+            console.log('req.body:',req.body);
+            res.status(200).json('added successfully');
         })
         .catch(err => {
             res.status(400).send("unable to save to database");
