@@ -7,6 +7,7 @@ function route(app) {
 app.use('/brands', brandRouter);
 app.use('/categories', categoryRouter);
 app.use('/products', productRouter);
+
 }
 
 module.exports = route;

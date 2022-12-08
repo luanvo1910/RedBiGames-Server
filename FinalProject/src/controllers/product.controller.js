@@ -20,6 +20,12 @@ class ProductController {
         .then(products => res.json(products))
         .catch(err => next(err));
     }
+
+    details(req, res, next) {
+        Product.find({_id: req.params._id})
+        .then(product => res.json(product))
+        .catch(err => next(err));
+    }
 }
 
 module.exports = new ProductController;
