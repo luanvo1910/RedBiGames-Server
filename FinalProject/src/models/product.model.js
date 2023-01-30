@@ -10,8 +10,8 @@ const Product = new Schema({
     image: String,
     stock: Number,
     createAt: {type: Date, default: Date.now},
-    category: {type: mongoose.Schema.Types.ObjectId, ref: Category},
-    brand: {type: mongoose.Schema.Types.ObjectId, ref: Brand}    
+    category: {type: Schema.Types.ObjectId, ref: Category},
+    brand: {type: Schema.Types.ObjectId, ref: Brand}    
 },
 {collection: 'products'}
 )
