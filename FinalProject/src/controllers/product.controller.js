@@ -26,6 +26,37 @@ class ProductController {
         .then(product => res.json(product))
         .catch(err => next(err));
     }
+
+    async update (req,res, next) {
+        const {name, description, price, image, stock, brand} = req.body
+
+        if(!name)
+        return res.status(400).json({success: false, message:'error'})
+
+        try{
+            let updatedProduct = {
+                name: name || 'Unnamed',
+                description: description,
+                price: price,
+                image: image,
+                stock: stock,
+                brand: brand
+            }
+            const productUpdateCondition = {_id: req.params.id, user: req.userId}
+
+            updatedProduct = await Product.findOneAndUpdate(postUpdateCondition, updatedProduct, {new: true})
+
+            if(!updatedProduct)
+            return res.status(401).json({success: false, message: 'Product not found or user not authorised'})
+
+            res.json({success: true, message: 'Product updated successfully'})
+
+        }
+        catch (error){
+            console.log(error)
+            res.status(500).json({success: false, message: 'Internal server error'})
+        }
+    }
 }
 
 module.exports = new ProductController;
