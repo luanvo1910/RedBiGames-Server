@@ -1,3 +1,4 @@
+const { response } = require('express');
 const Brand = require('../models/brand.model');
 const Category = require('../models/category.model');
 const Product = require('../models/product.model');
@@ -28,7 +29,7 @@ class ProductController {
     }
 
     async update (req,res, next) {
-        const {name, description, price, image, stock, brand} = req.body
+        const {name, decription, price, image, stock, brand} = req.body
 
         if(!name)
         return res.status(400).json({success: false, message:'error'})
@@ -36,15 +37,15 @@ class ProductController {
         try{
             let updatedProduct = {
                 name: name || 'Unnamed',
-                description: description,
+                decription: decription,
                 price: price,
                 image: image,
                 stock: stock,
                 brand: brand
             }
-            const productUpdateCondition = {_id: req.params.id, user: req.userId}
+            const productUpdateCondition = {_id: req.params._id, user: req.userId}
 
-            updatedProduct = await Product.findOneAndUpdate(postUpdateCondition, updatedProduct, {new: true})
+            updatedProduct = await Product.findOneAndUpdate(productUpdateCondition, updatedProduct, {new: true})
 
             if(!updatedProduct)
             return res.status(401).json({success: false, message: 'Product not found or user not authorised'})
@@ -55,6 +56,21 @@ class ProductController {
         catch (error){
             console.log(error)
             res.status(500).json({success: false, message: 'Internal server error'})
+        }
+    }
+
+    async delete (req, res) {
+        try {
+            const deleteCondition = {_id: req.params.id, user: req.userId}
+            const deletedProduct = await Product.findOneAndDelete(deleteCondition)
+
+            if(!deletedProduct)
+            return res.status(401).json({success: false, message: 'Product not found'})
+
+            res.json({success: true, message: 'Product deleted successfully'})
+        }catch(error) {
+            console.log(error)
+            res.status(404).json({success: false, message: 'Internal Server Error'})
         }
     }
 }
