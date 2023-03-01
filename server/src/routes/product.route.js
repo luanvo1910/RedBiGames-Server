@@ -11,5 +11,6 @@ router.get('/details/:_id', productController.details);
 router.post('/create', authJwt.verifyToken, productController.create);
 router.put('/update/:_id', authJwt.verifyToken, productController.update);
 router.delete('/delete/:_id', authJwt.verifyToken, productController.delete);
+router.get('/search', productController.search);
 
 module.exports = router;

@@ -69,7 +69,7 @@ class ProductController {
             if(!updatedProduct)
             return res.status(401).json({success: false, message: 'Product not found or user not authorised'})
 
-            res.json({success: true, message: 'Product updated successfully'})
+            res.json({success: true, message: 'Product updated successfully', product: updatedProduct})
 
         }
         catch (error){
@@ -90,6 +90,24 @@ class ProductController {
         }catch(error) {
             console.log(error)
             res.status(404).json({success: false, message: 'Internal Server Error'})
+        }
+    }
+
+    async search (req, res, next) {
+        try {
+            const { q } = req.query;
+            let products
+            if (q.length < 1){
+                products = await Product.find({});
+            } else {
+                products = await Product.find({ name: { $regex: q, $options: 'i' } });
+            } 
+          
+            if (products.length < 1) throw new ErrorHandler(404, 'No product found');
+        
+            res.json({ success: true, products });
+        } catch (error) {
+           next(error);
         }
     }
 }

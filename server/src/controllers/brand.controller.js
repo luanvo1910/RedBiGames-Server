@@ -7,16 +7,25 @@ class BrandController {
         .catch(err => next(err));
     }
 
-    create(req, res, next) {
-        const brand = new Brand(req.body);
-        brand.save()
-        .then(brand => {
-            console.log('req.body:',req.body);
-            res.status(200).json('added successfully');
-        })
-        .catch(err => {
-            res.status(400).send("unable to save to database");
-        });
+    async create(req, res, next) {
+        const {name} = req.body;
+        const brand = await Brand.findOne({name});
+        if (brand) {
+            return res
+				.status(400)
+				.json({ success: false, message: 'Brand has already exits' })
+        }
+        try {
+            const newBrand = new Brand({
+                name
+            })
+            await newBrand.save()
+
+            res.json({ success: true, message: 'Brand created successfully', brand: newBrand})
+        } catch (error) {
+            console.log(error)
+		    res.status(500).json({ success: false, message: 'Internal server error' })
+        }
     }
 
     async update (req,res, next) {
@@ -36,7 +45,7 @@ class BrandController {
             if(!updatedBrand)
             return res.status(401).json({success: false, message: 'Brand not found or user not authorised'})
 
-            res.json({success: true, message: 'Brand updated successfully'})
+            res.json({success: true, message: 'Brand updated successfully', brand: updatedBrand})
 
         }
         catch (error){
@@ -47,7 +56,7 @@ class BrandController {
 
     async delete (req, res) {
         try {
-            const deleteCondition = {_id: req.params.id, user: req.userId}
+            const deleteCondition = {_id: req.params._id, user: req.userId}
             const deletedBrand = await Brand.findOneAndDelete(deleteCondition)
 
             if(!deletedBrand)

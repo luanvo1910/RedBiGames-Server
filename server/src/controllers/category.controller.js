@@ -7,16 +7,25 @@ class CategoryController {
         .catch(err => next(err));
     }
 
-    create(req, res, next) {
-        const category = new Category(req.body);
-        category.save()
-        .then(category => {
-            console.log('req.body:',req.body);
-            res.status(200).json('added successfully');
-        })
-        .catch(err => {
-            res.status(400).send("unable to save to database");
-        });
+    async create(req, res, next) {
+        const {category} = req.body;
+        const Checkcategory = await Category.findOne({category});
+        if (Checkcategory) {
+            return res
+				.status(400)
+				.json({ success: false, message: 'Category has already exits' })
+        }
+        try {
+            const newCategory = new Category({
+                category
+            })
+            await newCategory.save()
+
+            res.json({ success: true, message: 'Category created successfully', category: newCategory})
+        } catch (error) {
+            console.log(error)
+		    res.status(500).json({ success: false, message: 'Internal server error' })
+        }
     }
 
     async update (req,res, next) {
@@ -36,7 +45,7 @@ class CategoryController {
             if(!updatedCategory)
             return res.status(401).json({success: false, message: 'Category not found or user not authorised'})
 
-            res.json({success: true, message: 'Category updated successfully'})
+            res.json({success: true, message: 'Category updated successfully', category: updatedCategory})
 
         }
         catch (error){
@@ -47,7 +56,7 @@ class CategoryController {
 
     async delete (req, res) {
         try {
-            const deleteCondition = {_id: req.params.id, user: req.userId}
+            const deleteCondition = {_id: req.params._id, user: req.userId}
             const deletedCategory = await Category.findOneAndDelete(deleteCondition)
 
             if(!deletedCategory)
