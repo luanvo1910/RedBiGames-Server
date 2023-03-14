@@ -6,7 +6,7 @@ const Category = require('./category.model');
 const Product = new Schema({
     name: String,
     decription: String,
-    price: String,
+    price: Number,
     image: String,
     stock: Number,
     createAt: {
