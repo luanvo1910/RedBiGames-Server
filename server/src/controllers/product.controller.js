@@ -1,13 +1,11 @@
-const { response } = require('express');
-const Brand = require('../models/brand.model');
-const Category = require('../models/category.model');
 const Product = require('../models/product.model');
+const multer = require("multer");
+const cloudinary = require("../utils/cloudinary");
 
 class ProductController {
     async create(req, res) {
-        const {name, decription, price, image, stock, brand, category} = req.body;
-        console.log(req.body);
-        console.log(req.userId);
+        const {name, description, price, stock, brand, category} = req.body;
+        const image = await cloudinary.uploader.upload(req.file.path);
         const product = await Product.findOne({name});
         if (product) {
             return res
@@ -17,9 +15,9 @@ class ProductController {
         try {
             const newProduct = new Product({
                 name,
-                decription,
+                description,
                 price,
-                image,
+                image: image.secure_url,
                 stock,
                 brand,
                 category
@@ -50,21 +48,22 @@ class ProductController {
     }
 
     async update (req,res, next) {
-        const {name, decription, price, image, stock, brand, category} = req.body
+        const {name, description, price, stock, brand, category} = req.body
+        const image = await cloudinary.uploader.upload(req.file.path);
 
         try{
             let updatedProduct = {
                 name: name || 'Unnamed',
-                decription: decription || 'no description',
+                description: description || 'no description',
                 price: price || 'unknown',
-                image: image || 'https://teamon.com.tr/assets/urunler/resim-yok-ccce33db184baf7db304f6b11d141b3327a07c3ccf4b6e3f2c92d7860b6e0d34.png',
+                image: image.secure_url,
                 stock: stock || 0,
                 brand: brand,
                 category: category
             }
-            const productUpdateCondition = {_id: req.params._id, user: req.userId}
+            const productUpdateCondition = {_id: req.params._id}
 
-            updatedProduct = await Product.findOneAndUpdate(productUpdateCondition, updatedProduct, {new: true})
+            updatedProduct = await Product.findByIdAndUpdate(productUpdateCondition, updatedProduct, {new: true})
 
             if(!updatedProduct)
             return res.status(401).json({success: false, message: 'Product not found or user not authorised'})
@@ -109,6 +108,7 @@ class ProductController {
            next(error);
         }
     }
+
 }
 
 module.exports = new ProductController;

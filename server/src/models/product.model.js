@@ -4,8 +4,15 @@ const Brand = require('./brand.model');
 const Category = require('./category.model');
 
 const Product = new Schema({
-    name: String,
-    decription: String,
+    name: {
+        type: String,
+        unique: [true, "product name already exists"],
+    },
+    description: {
+        type: String,
+        minLength: [8, "Description must be at least 8 character"],
+        maxLength: 255,
+    },
     price: Number,
     image: String,
     stock: Number,
