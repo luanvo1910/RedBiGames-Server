@@ -7,5 +7,6 @@ const orderController = require('../controllers/order.controller');
 router.get('/', authJwt.verifyToken, orderController.list);
 router.get('/user', authJwt.verifyToken, orderController.userList);
 router.post('/add', authJwt.verifyToken, orderController.addOrder);
+router.post('/mailing', authJwt.verifyToken, orderController.sendmail);
 
 module.exports = router;
