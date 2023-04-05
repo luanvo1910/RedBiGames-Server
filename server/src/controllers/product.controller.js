@@ -33,18 +33,12 @@ class ProductController {
 
     async list(req, res) {
         try {
-            const products = await Product.find({});
+            const products = await Product.find({}).populate('brand').populate('category');
             res.json({ success: true, products })
         } catch (error) {
             console.log(error)
             res.status(500).json({ success: false, message: 'Internal server error' })
         }
-    }
-
-    details(req, res, next) {
-        Product.find({_id: req.params._id})
-        .then(product => res.json(product))
-        .catch(err => next(err));
     }
 
     async update (req,res, next) {

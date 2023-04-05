@@ -9,7 +9,6 @@ const router = express.Router();
 const productController = require('../controllers/product.controller');
 
 router.get('/', productController.list);
-router.get('/details/:_id', productController.details);
 router.post('/create', authJwt.verifyToken, upload.single("image"), productController.create);
 router.put('/update/:_id', authJwt.verifyToken, upload.single("image"), productController.update);
 router.delete('/delete/:_id', authJwt.verifyToken, productController.delete);

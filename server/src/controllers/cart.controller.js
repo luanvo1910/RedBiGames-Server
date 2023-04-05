@@ -38,7 +38,7 @@ class CartController {
             {
                 products.push(_id);
                 let updatedCart = await Cart.findOneAndUpdate({userId: userId}, {products: products})
-                return res.json({ added: true, message: 'Added product to your cart', cart: updatedCart })
+                return res.json({ added: true, message: 'Added product to your cart', cart: cart })
             }
             return res.json({ added: false, message: 'Product already in your cart'})
         }
@@ -67,7 +67,7 @@ class CartController {
             const findProduct = cart.products.indexOf(_id);
             cart.products.splice(findProduct, 1);
             let updatedCart = await Cart.findOneAndUpdate({_id: cart._id}, {products: cart.products})
-            res.json({ removed: true, message: 'Product removed successfully', cart: updatedCart})
+            res.json({ removed: true, message: 'Product removed successfully', cart: cart})
             
         } catch (error) {
             console.log(error)
