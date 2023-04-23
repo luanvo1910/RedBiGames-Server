@@ -64,7 +64,7 @@ class OrderController {
                 updatedProduct = await Product.findByIdAndUpdate({_id: product}, updatedProduct, {new: true})
             })
 
-            res.json({success: true, message: 'Product updated successfully', product: updatedProduct})
+            res.json({success: true, message: 'Product updated successfully'})
         } catch (error) {
             console.log(error)
 		    res.status(500).json({ success: false, message: 'Internal server error' })
